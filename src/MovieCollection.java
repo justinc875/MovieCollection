@@ -58,6 +58,35 @@ public class MovieCollection {
                 System.out.println("Invalid choice!");
             }
         }
+    }
 
+    private void sortTitle() {
+        int count = 0;
+        for (int i = 0; i < movies.size(); i++) {
+            String temp = movies.get(i).getTitle();
+            int index = i;
+            while (index > 0 && temp.compareTo(movies.get(index - 1).getTitle()) < 0) {
+                count ++;
+                movies.set(index, movies.get(index - 1));
+                index --;
+            }
+            movies.set(index, movies.get(i));
+        }
+
+    }
+
+    public void searchTitles() {
+        ArrayList<>
+        System.out.println("Enter a title search term: ");
+        String term = scanner.nextLine();
+        for (int i = 0; i < movies.size() - term.length(); i++) {
+            if (movies.get(i).getTitle().contains(term)) {
+
+            }
+        }
+    }
+
+    public void searchCast() {
+        System.out.println("cast");
     }
 }
