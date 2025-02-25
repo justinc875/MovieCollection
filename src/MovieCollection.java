@@ -1,16 +1,18 @@
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.ArrayList;
 
 public class MovieCollection {
     //instance variables
-    private ArrayList<Movie> movies;
-    private Scanner scanner;
+    private ArrayList<Movie> movies = new ArrayList<>();
+    private Scanner scanner = new Scanner(System.in);
 
     //constructor
     public MovieCollection() {
-
+        importData();
+        menu();
     }
 
     public void importData() {
@@ -19,11 +21,13 @@ public class MovieCollection {
         try {
             File myFile = new File("src\\movies_data.csv");
             Scanner fileScanner = new Scanner(myFile);
+                fileScanner.nextLine();
+
             while (fileScanner.hasNext()) {
                 String data = fileScanner.nextLine();
                 String[] splitData = data.split(",");
                 String title = splitData[0];
-                String[] cast = new String[]{splitData[1]};
+                String[] cast = splitData[1].split("\\|");
                 String director = splitData[2];
                 String overview = splitData[3];
                 int runtime = Integer.parseInt(splitData[4]);
@@ -31,6 +35,7 @@ public class MovieCollection {
                 Movie s = new Movie(title, cast, director, overview, runtime, userRating);
                 movies.add(s);
             }
+            fileScanner.close();
         } catch (IOException exception) {
             System.out.println(exception.getMessage());
         }
@@ -60,28 +65,27 @@ public class MovieCollection {
         }
     }
 
-    private void sortTitle() {
-        int count = 0;
-        for (int i = 0; i < movies.size(); i++) {
-            String temp = movies.get(i).getTitle();
+    private void sortTitle(ArrayList<String> m) {
+        for (int i = 0; i < m.size(); i++) {
+            String temp = m.get(i);
             int index = i;
-            while (index > 0 && temp.compareTo(movies.get(index - 1).getTitle()) < 0) {
-                count ++;
-                movies.set(index, movies.get(index - 1));
+            while (index > 0 && temp.compareTo(m.get(index - 1)) < 0) {
+                m.set(index, m.get(index - 1));
                 index --;
             }
-            movies.set(index, movies.get(i));
+            m.set(index, temp);
         }
+
 
     }
 
     public void searchTitles() {
-        ArrayList<>
+        ArrayList<String> movieList = new ArrayList<>();
         System.out.println("Enter a title search term: ");
-        String term = scanner.nextLine();
-        for (int i = 0; i < movies.size() - term.length(); i++) {
-            if (movies.get(i).getTitle().contains(term)) {
-
+        String term = scanner.nextLine().toLowerCase();
+        for (int i = 0; i < movies.size(); i++) {
+            if (movies.get(i).getTitle().toLowerCase().contains(term)) {
+                movieList.add(movies.get(i).getTitle());
             }
         }
     }

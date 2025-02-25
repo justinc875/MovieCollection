@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Movie {
     //6 instance variables
     private String title;
