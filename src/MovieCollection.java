@@ -21,7 +21,7 @@ public class MovieCollection {
         try {
             File myFile = new File("src\\movies_data.csv");
             Scanner fileScanner = new Scanner(myFile);
-                fileScanner.nextLine();
+            fileScanner.nextLine();
 
             while (fileScanner.hasNext()) {
                 String data = fileScanner.nextLine();
@@ -40,7 +40,7 @@ public class MovieCollection {
             System.out.println(exception.getMessage());
         }
     }
-    
+
     public void menu() {
         System.out.println("Welcome to the movie collection!");
         String menuOption = "";
@@ -88,9 +88,135 @@ public class MovieCollection {
                 movieList.add(movies.get(i).getTitle());
             }
         }
+
+        if(movieList.isEmpty()) {
+            System.out.print("No movie titles match that search term!");
+            return;
+        }
+
+        sortTitle(movieList);
+
+        for (int i = 0; i < movieList.size(); i++) {
+            System.out.println((i + 1) + ". " + movieList.get(i));
+        }
+
+        System.out.println("Which movie would you like to learn more about?");
+        System.out.println("Enter number: ");
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+
+        if (choice < 1 || choice > movieList.size()) {
+            System.out.println("Invalid selection!");
+            return;
+        }
+
+        String selectedTitle = movieList.get(choice - 1);
+        Movie selectedMovie = null;
+
+
+        for (Movie m : movies) {
+            if (m.getTitle().equals(selectedTitle)) {
+                selectedMovie = m;
+                break;
+            }
+        }
+
+        if (selectedMovie != null) {
+            System.out.println("Title: " + selectedMovie.getTitle());
+            System.out.println("Runtime: " + selectedMovie.getRuntime() + " minutes");
+            System.out.println("Director: " + selectedMovie.getDirector());
+            System.out.println("Cast: " + Arrays.toString(selectedMovie.getCast())); //suggested from intellij
+            System.out.println("Overview: " + selectedMovie.getOverview());
+            System.out.println("User Rating: " + selectedMovie.getUserRating());
+        } else {
+            System.out.println("Movie details not found!");
+        }
+
+
+
     }
 
     public void searchCast() {
-        System.out.println("cast");
+        System.out.println("Enter a cast member search term: ");
+        String term = scanner.nextLine().toLowerCase();
+        ArrayList<String> matchingCast = new ArrayList<>();
+
+
+        for (int i = 0; i < movies.size(); i++) {
+            Movie movie = movies.get(i);
+            String[] castMembers = movie.getCast();
+
+            for (int j = 0; j < castMembers.length; j++) {
+                if (castMembers[j].toLowerCase().contains(term) && !matchingCast.contains(castMembers[j])) {
+                        matchingCast.add(castMembers[j]);
+                }
+            }
+        }
+
+        if (matchingCast.isEmpty()) {
+            System.out.println("No cast members match that search term!");
+            return;
+        }
+
+        sortTitle(matchingCast);
+
+        for (int i = 0; i < matchingCast.size(); i++) {
+            System.out.println((i + 1) + ". " + matchingCast.get(i));
+        }
+
+        System.out.println("Which would you like to see all movies for? ");
+        System.out.println("Enter Number: ");
+        int castResponse = scanner.nextInt();
+        scanner.nextLine();
+        String selected = matchingCast.get(castResponse - 1);
+
+        ArrayList<String> castMovies = new ArrayList<>();
+        for (int i = 0; i < movies.size(); i++) {
+            String[] castMembers = movies.get(i).getCast();
+            boolean found = false;
+            for (int j = 0; j < castMembers.length && !found; j++) {
+                if (castMembers[j].equals(selected)) {
+                    castMovies.add(movies.get(i).getTitle());
+                    found = true;
+                }
+            }
+        }
+
+        if (castMovies.isEmpty()) {
+            System.out.println("No movies found featuring " + selected);
+            return;
+        }
+
+        sortTitle(castMovies);
+        // Display the sorted movies in a numbered list
+        System.out.println("Movies featuring " + selected + ":");
+        for (int i = 0; i < castMovies.size(); i++) {
+            System.out.println((i + 1) + ". " + castMovies.get(i));
+        }
+
+        System.out.println("Enter a number from the list to learn more about that movie:");
+        int movieChoice = scanner.nextInt();
+        scanner.nextLine();
+        String selectedMovieTitle = castMovies.get(movieChoice - 1);
+
+        //create new movie object to track which movie has been selected
+        Movie selectedMovie = null;
+        for(int i = 0; i < movies.size(); i ++) {
+            if(movies.get(i).getTitle().equals(selectedMovieTitle)) {
+                selectedMovie = movies.get(i);
+            }
+        }
+
+        if (selectedMovie != null) {
+            System.out.println("Title: " + selectedMovie.getTitle());
+            System.out.println("Runtime: " + selectedMovie.getRuntime() + " minutes");
+            System.out.println("Director: " + selectedMovie.getDirector());
+            System.out.println("Cast: " + Arrays.toString(selectedMovie.getCast()));
+            System.out.println("Overview: " + selectedMovie.getOverview());
+            System.out.println("User Rating: " + selectedMovie.getUserRating());
+        } else {
+            System.out.println("Movie details not found!");
+        }
     }
+
 }
